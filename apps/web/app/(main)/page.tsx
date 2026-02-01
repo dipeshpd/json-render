@@ -31,6 +31,9 @@ export default function Home() {
             <Link href="/docs">Get Started</Link>
           </Button>
           <Button size="lg" variant="outline" asChild>
+            <Link href="/canvas">Try AI Canvas</Link>
+          </Button>
+          <Button size="lg" variant="outline" asChild>
             <a
               href="https://github.com/vercel-labs/json-render"
               target="_blank"
