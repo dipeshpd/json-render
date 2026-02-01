@@ -11,6 +11,7 @@ export function CanvasArea() {
     selectedWidgetId,
     selectWidget,
     updateWidgetPosition,
+    updateWidgetDimensions,
     removeWidget,
   } = useCanvas();
 
@@ -36,7 +37,10 @@ export function CanvasArea() {
       onClick={handleCanvasClick}
     >
       {/* Canvas content area with minimum size */}
-      <div className="min-w-[2000px] min-h-[2000px] relative">
+      <div
+        className="min-w-[2000px] min-h-[2000px] relative"
+        onClick={handleCanvasClick}
+      >
         {widgets.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="text-center text-muted-foreground">
@@ -56,6 +60,9 @@ export function CanvasArea() {
             onSelect={() => selectWidget(widget.id)}
             onPositionChange={(position) =>
               updateWidgetPosition(widget.id, position)
+            }
+            onDimensionsChange={(dimensions) =>
+              updateWidgetDimensions(widget.id, dimensions)
             }
             onRemove={() => removeWidget(widget.id)}
           />

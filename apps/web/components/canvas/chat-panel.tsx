@@ -12,13 +12,17 @@ import {
 import { useUIStream } from "@json-render/react";
 import { useCanvas } from "./use-canvas";
 import { cn } from "@/lib/utils";
+import {
+  enrichPromptWithCryptoData,
+  formatCryptoDataForPrompt,
+} from "@/lib/crypto";
 
 const EXAMPLE_PROMPTS = [
+  "Show current Bitcoin price with 24h change",
+  "Create a 7-day price chart for Ethereum",
+  "Build a crypto dashboard with BTC, ETH, and SOL",
   "Create a user profile card with avatar, name, and bio",
   "Build a login form with email and password fields",
-  "Create a dashboard metric card showing revenue",
-  "Build a contact form with name, email, and message",
-  "Create a pricing card with features list",
 ];
 
 export function ChatPanel() {
@@ -97,8 +101,20 @@ export function ChatPanel() {
       // Clear input
       setInput("");
 
+      // Enrich with crypto data if relevant
+      let enrichedPrompt = prompt;
+      try {
+        const cryptoData = await enrichPromptWithCryptoData(prompt);
+        if (cryptoData) {
+          enrichedPrompt = `${prompt}\n\n${formatCryptoDataForPrompt(cryptoData)}`;
+        }
+      } catch (error) {
+        // If crypto fetch fails, continue with original prompt
+        console.error("Failed to enrich prompt with crypto data:", error);
+      }
+
       // Start generation
-      await send(prompt);
+      await send(enrichedPrompt);
     },
     [addMessage, addWidget, isStreaming, send],
   );
@@ -234,9 +250,9 @@ export function ChatPanel() {
                 </div>
                 <div className="bg-muted rounded-lg px-3 py-2">
                   <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]" />
-                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]" />
-                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
+                    <div className="w-1.5 h-1.5 bg-primary/70 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                    <div className="w-1.5 h-1.5 bg-primary/70 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                    <div className="w-1.5 h-1.5 bg-primary/70 rounded-full animate-bounce" />
                   </div>
                 </div>
               </div>

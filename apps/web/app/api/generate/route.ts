@@ -1,4 +1,5 @@
 import { streamText } from "ai";
+import { openai } from "@ai-sdk/openai";
 import { headers } from "next/headers";
 import { minuteRateLimit, dailyRateLimit } from "@/lib/rate-limit";
 
@@ -55,6 +56,7 @@ RULES:
 4. Parent first, then children
 5. Each element needs: key, type, props
 6. Use className for custom Tailwind styling when needed
+7. Output ONLY raw JSONL lines - NO markdown code blocks, NO backticks, NO explanations
 
 FORBIDDEN CLASSES (NEVER USE):
 - min-h-screen, h-screen, min-h-full, h-full, min-h-dvh, h-dvh - viewport heights break the small render container
@@ -77,10 +79,19 @@ EXAMPLE (Blog with responsive grid):
 {"op":"add","path":"/elements/post1","value":{"key":"post1","type":"Card","props":{"title":"Post Title"},"children":["excerpt"]}}
 {"op":"add","path":"/elements/excerpt","value":{"key":"excerpt","type":"Text","props":{"content":"Post content...","variant":"body"}}}
 
+CRYPTO DATA HANDLING:
+When LIVE CRYPTO DATA is provided in the prompt:
+- Use the actual values from the data (prices, percentages, market caps)
+- Format currency with $ and appropriate decimals (e.g., $45,230.50)
+- Use Badge variant="success" for positive price changes, variant="danger" for negative
+- When price history data is provided, use it directly for LineGraph/BarGraph data prop
+- Include coin symbols in headings (e.g., "Bitcoin (BTC)")
+- For dashboards with multiple coins, use Grid with responsive columns
+
 Generate JSONL:`;
 
 const MAX_PROMPT_LENGTH = 500;
-const DEFAULT_MODEL = "anthropic/claude-haiku-4.5";
+const DEFAULT_MODEL = "gpt-4o-mini";
 
 export async function POST(req: Request) {
   // Get client IP for rate limiting
@@ -136,7 +147,7 @@ DO NOT output patches for elements that don't need to change. Only output what's
   }
 
   const result = streamText({
-    model: process.env.AI_GATEWAY_MODEL || DEFAULT_MODEL,
+    model: openai(process.env.OPENAI_MODEL || DEFAULT_MODEL),
     system: SYSTEM_PROMPT,
     prompt: userPrompt,
     temperature: 0.7,

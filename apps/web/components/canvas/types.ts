@@ -14,6 +14,67 @@ export interface WidgetPosition {
 export type WidgetStatus = "generating" | "complete" | "error";
 
 /**
+ * Size category for widgets
+ */
+export type WidgetSize = "small" | "medium" | "large" | "xlarge";
+
+/**
+ * Dimensions of a widget (width and height in pixels)
+ */
+export interface WidgetDimensions {
+  width: number;
+  height: number;
+}
+
+/**
+ * Size presets for each widget size category
+ */
+export const SIZE_PRESETS: Record<WidgetSize, WidgetDimensions> = {
+  small: { width: 200, height: 120 },
+  medium: { width: 320, height: 200 },
+  large: { width: 480, height: 320 },
+  xlarge: { width: 600, height: 450 },
+};
+
+/**
+ * Default size mapping for each component type
+ */
+export const COMPONENT_DEFAULT_SIZES: Record<string, WidgetSize> = {
+  // Small components
+  Button: "small",
+  Badge: "small",
+  Avatar: "small",
+  Link: "small",
+  Switch: "small",
+  Checkbox: "small",
+  Radio: "small",
+  // Medium components
+  Alert: "medium",
+  Input: "medium",
+  Select: "medium",
+  Textarea: "medium",
+  Progress: "medium",
+  Rating: "medium",
+  Text: "medium",
+  Divider: "medium",
+  Heading: "medium",
+  // Large components
+  Card: "large",
+  Form: "large",
+  Stack: "large",
+  Grid: "large",
+  Image: "large",
+  // Extra large components
+  BarGraph: "xlarge",
+  LineGraph: "xlarge",
+};
+
+/**
+ * Grid size for snapping (matches canvas grid)
+ */
+export const GRID_SIZE = 24;
+
+/**
  * A widget on the canvas containing a rendered UI tree
  */
 export interface CanvasWidget {
@@ -31,6 +92,10 @@ export interface CanvasWidget {
   createdAt: number;
   /** Optional error message if generation failed */
   error?: string;
+  /** Size category of the widget */
+  size: WidgetSize;
+  /** Current dimensions (can be modified by resize) */
+  dimensions: WidgetDimensions;
 }
 
 /**
@@ -78,6 +143,8 @@ export interface CanvasActions {
   updateWidgetTree: (id: string, tree: UITree) => void;
   /** Update a widget's position */
   updateWidgetPosition: (id: string, position: WidgetPosition) => void;
+  /** Update a widget's dimensions */
+  updateWidgetDimensions: (id: string, dimensions: WidgetDimensions) => void;
   /** Update a widget's status */
   updateWidgetStatus: (
     id: string,
