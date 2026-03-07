@@ -19,6 +19,8 @@ npm install @json-render/core @json-render/react-pdf
 npm install @json-render/core @json-render/react-email @react-email/components @react-email/render
 # or for Vue
 npm install @json-render/core @json-render/vue
+# or for Svelte
+npm install @json-render/core @json-render/svelte
 ```
 
 ## Why json-render?
@@ -28,7 +30,7 @@ json-render is a **Generative UI** framework: AI generates interfaces from natur
 - **Guardrailed** - AI can only use components in your catalog
 - **Predictable** - JSON output matches your schema, every time
 - **Fast** - Stream and render progressively as the model responds
-- **Cross-Platform** - React, Vue (web), React Native (mobile) from the same catalog
+- **Cross-Platform** - React, Vue, Svelte (web), React Native (mobile) from the same catalog
 - **Batteries Included** - 36 pre-built shadcn/ui components ready to use
 
 ## Quick Start
@@ -116,12 +118,14 @@ function Dashboard({ spec }) {
 | `@json-render/core` | Schemas, catalogs, AI prompts, dynamic props, SpecStream utilities |
 | `@json-render/react` | React renderer, contexts, hooks |
 | `@json-render/vue` | Vue 3 renderer, composables, providers |
+| `@json-render/svelte` | Svelte 5 renderer with runes-based reactivity |
 | `@json-render/shadcn` | 36 pre-built shadcn/ui components (Radix UI + Tailwind CSS) |
 | `@json-render/react-native` | React Native renderer with standard mobile components |
 | `@json-render/remotion` | Remotion video renderer, timeline schema |
 | `@json-render/react-pdf` | React PDF renderer for generating PDF documents from specs |
 | `@json-render/react-email` | React Email renderer for HTML/plain-text emails from specs |
 | `@json-render/image` | Image renderer for SVG/PNG output (OG images, social cards) via Satori |
+| `@json-render/codegen` | Utilities for generating code from json-render UI trees |
 | `@json-render/redux` | Redux / Redux Toolkit adapter for `StateStore` |
 | `@json-render/zustand` | Zustand adapter for `StateStore` |
 | `@json-render/jotai` | Jotai adapter for `StateStore` |
@@ -176,6 +180,23 @@ const { registry } = defineRegistry(catalog, {
 
 // In your Vue component template:
 // <Renderer :spec="spec" :registry="registry" />
+```
+
+### Svelte (UI)
+
+```typescript
+import { defineRegistry, Renderer } from "@json-render/svelte";
+import { schema } from "@json-render/svelte/schema";
+
+const { registry } = defineRegistry(catalog, {
+  components: {
+    Card: ({ props, children }) => /* Svelte 5 snippet */,
+    Button: ({ props, emit }) => /* Svelte 5 snippet */,
+  },
+});
+
+// In your Svelte component:
+// <Renderer spec={spec} registry={registry} />
 ```
 
 ### shadcn/ui (Web)
